@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSM ANWARUL Tracker</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+    text-align:center;
+}
+
+.container{
+    padding:20px;
+    margin-top:50px;
+}
+
+h1{
+    font-size:28px;
+    color:#00ffd5;
+}
+
+button{
+    padding:15px 25px;
+    font-size:16px;
+    border:2px solid #00ffd5;
+    background:transparent;
+    color:#00ffd5;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#00ffd5;
+    color:black;
+    transform:scale(1.1);
+}
+
+#result{
+    margin-top:20px;
+    font-size:16px;
+}
+
+a{
+    color:#00ffd5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>📍 GSM ANWARUL Tracker</h1>
+
+    <button onclick="getLocation()">Share My Location</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+function getLocation(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        document.getElementById("result").innerHTML = "Geolocation not supported";
+    }
+}
+
+function showPosition(position){
+    let lat = position.coords.latitude;
+    let lon = position.coords.longitude;
+
+    let mapLink = https://www.google.com/maps?q=${lat},${lon};
+
+    document.getElementById("result").innerHTML = `
+        <p><b>Latitude:</b> ${lat}</p>
+        <p><b>Longitude:</b> ${lon}</p>
+        <p><a href="${mapLink}" target="_blank">📍 Open in Google Maps</a></p>
+    `;
+}
+
+function showError(error){
+    document.getElementById("result").innerHTML = "Permission denied or error occurred";
+}
+</script>
+
+</body>
+</html>
