@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSM ANWARUL - Tracker</title>
+
+<style>
+body{
+  background:#0f172a;
+  color:white;
+  font-family:sans-serif;
+  text-align:center;
+  padding:20px;
+}
+.box{
+  background:#111827;
+  padding:20px;
+  border-radius:15px;
+  margin-top:20px;
+}
+button{
+  padding:12px;
+  border:2px solid cyan;
+  background:none;
+  color:cyan;
+  border-radius:10px;
+  margin-top:10px;
+  width:100%;
+  transition:0.3s;
+}
+button:hover{
+  background:cyan;
+  color:black;
+  transform:scale(1.05);
+}
+input{
+  padding:10px;
+  width:100%;
+  margin-top:10px;
+  border-radius:8px;
+  border:none;
+}
+a{
+  color:cyan;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📍 GSM ANWARUL TRACKER</h1>
+
+<div class="box">
+  <button onclick="generate()">🔗 Generate Link</button>
+  <p id="link"></p>
+</div>
+
+<div class="box">
+  <h3>📡 Check Location</h3>
+  <input id="idInput" placeholder="Enter ID">
+  <button onclick="check()">Check</button>
+  <div id="result"></div>
+</div>
+
+<script>
+
+// 🔗 Generate Link
+function generate(){
+  let id = Math.random().toString(36).substring(2,8);
+  let link = location.origin + location.pathname + "?id=" + id;
+  document.getElementById("link").innerHTML = link;
+}
+
+// URL से ID लेना
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+// अगर link open हुआ तो location page दिखे
+if(id){
+  document.body.innerHTML = `
+    <h2>📍 Share Location</h2>
+    <button onclick="sendLocation()">Allow Location</button>
+    <p id="msg"></p>
+  `;
+}
+
+// Location send करना
+function sendLocation(){
+  navigator.geolocation.getCurrentPosition((pos)=>{
+    let lat = pos.coords.latitude;
+    let lon = pos.coords.longitude;
+
+    // Demo storage (same browser only)
+    localStorage.setItem("loc_"+id, JSON.stringify({lat, lon}));
+
+    document.getElementById("msg").innerHTML="✅ Location Sent";
+
+  },()=>{
+    document.getElementById("msg").innerHTML="❌ Permission Denied";
+  });
+}
+
+// Location check करना
+function check(){
+  let id = document.getElementById("idInput").value;
+  let data = localStorage.getItem("loc_"+id);
+
+  if(data){
+    let d = JSON.parse(data);
+    document.getElementById("result").innerHTML =
+      `Lat: ${d.lat}<br>Lon: ${d.lon}
+      <br><a href="https://maps.google.com/?q=${d.lat},${d.lon}" target="_blank">📍 Open Map</a>`;
+  }else{
+    document.getElementById("result").innerHTML="❌ No Data Found";
+  }
+}
+</script>
+
+</body>
+</html>
